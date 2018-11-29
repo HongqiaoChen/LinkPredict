@@ -94,35 +94,55 @@ def Check_Train(Train):
 
 #找到原边集中各节点的度
 
-a = 0
-c = 1
-while a == 0:
-    print(c)
-    c += 1
-    E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt', dtype=int)
-    E = np.transpose(E)
-    list1 = E[0]
-    list2 = E[1]
-    E = np.transpose(E)
-    list1 = list1.tolist()
-    list2 = list2.tolist()
-    list3 = list1 + list2
-    list3 = np.unique(list3)
-    list3 = np.array(list3)
-    list3 = list3.reshape(-1, 1)
-    Deg_V = [[0] for i in range(len(list3))]
-    Deg_V = np.array(Deg_V)
-    for i in range(len(E)):
-        Deg_V[E[i][0]] += 1
-        Deg_V[E[i][1]] += 1
-    Deg_V_E = np.hstack((list3, Deg_V))
-    Deg_V_E = np.array(Deg_V_E)
-    # 把原边集中各节点的度赋值给 测试集，以待测试集逐条删边
-    Deg_V_Train = Deg_V_E
-    Test,Train = Create_Test_and_Train()
-    a = Check_Train(Train)
+# a = 0
+# c = 1
+# while a == 0:
+#     print(c)
+#     c += 1
+#     E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/Yeast/Yeast_standard.txt', dtype=int)
+#     E = np.transpose(E)
+#     list1 = E[0]
+#     list2 = E[1]
+#     E = np.transpose(E)
+#     list1 = list1.tolist()
+#     list2 = list2.tolist()
+#     list3 = list1 + list2
+#     list3 = np.unique(list3)
+#     list3 = np.array(list3)
+#     list3 = list3.reshape(-1, 1)
+#     Deg_V = [[0] for i in range(len(list3))]
+#     Deg_V = np.array(Deg_V)
+#     for i in range(len(E)):
+#         Deg_V[E[i][0]] += 1
+#         Deg_V[E[i][1]] += 1
+#     Deg_V_E = np.hstack((list3, Deg_V))
+#     Deg_V_E = np.array(Deg_V_E)
+#     # 把原边集中各节点的度赋值给 测试集，以待测试集逐条删边
+#     Deg_V_Train = Deg_V_E
+#     Test,Train = Create_Test_and_Train()
+#     a = Check_Train(Train)
 
-print('Ok')
+E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt', dtype=int)
+E = np.transpose(E)
+list1 = E[0]
+list2 = E[1]
+E = np.transpose(E)
+list1 = list1.tolist()
+list2 = list2.tolist()
+list3 = list1 + list2
+list3 = np.unique(list3)
+list3 = np.array(list3)
+list3 = list3.reshape(-1, 1)
+Deg_V = [[0] for i in range(len(list3))]
+Deg_V = np.array(Deg_V)
+for i in range(len(E)):
+    Deg_V[E[i][0]] += 1
+    Deg_V[E[i][1]] += 1
+Deg_V_E = np.hstack((list3, Deg_V))
+Deg_V_E = np.array(Deg_V_E)
+# 把原边集中各节点的度赋值给 测试集，以待测试集逐条删边
+Deg_V_Train = Deg_V_E
+Test,Train = Create_Test_and_Train()
 np.savetxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Train.edgelist',Train,fmt="%d %d")
 np.savetxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Test.edgelist',Test,fmt="%d %d")
 

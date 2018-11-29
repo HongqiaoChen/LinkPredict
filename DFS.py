@@ -1,6 +1,6 @@
 import numpy as np
 import operator
-Train = np.loadtxt('D:/deepwalk_test/test/Train.edgelist',dtype=int)
+Train = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/Yeast/Train.edgelist',dtype=int)
 #创建List集 第i行表示 节点i的邻居节点的序号
 Train = np.transpose(Train)
 list1 = Train[0]

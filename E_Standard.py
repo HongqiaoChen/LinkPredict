@@ -1,6 +1,6 @@
 import numpy as np
 
-E = np.loadtxt('D:/deepwalk_test/USAir/USAir.txt',dtype=int)
+E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/Power/Power.txt')
 #得到无权图
 if len(E[0])==3 :
     E = np.delete(E,2,axis=1)
@@ -21,7 +21,18 @@ if np.min(list3) != 0:
     dec_m = np.array(dec_m)
     E = E-dec_m
 
-#删除重复边
+
+# 将E的float类型改为int类型（原始数据集可能是一个有权图，其权重大概率为浮点数）
+E = E.astype(dtype = np.int32)
+
+# 删除重复边
+count = 0
+for i in range(len(E)):
+    if E[i][0] > E[i][1]:
+        temp = E[i][0]
+        E[i][0] = E[i][1]
+        E[i][1] = temp
+        count += 1
 l = len(np.unique(E))
 list4 = [[0]*l for i in range(l)]
 list4 = np.array(list4)
@@ -42,12 +53,11 @@ for i in range(l):
             list5[count][0] = i
             list5[count][1] = j
             count += 1
-
 E = list5
 
 e = np.unique(E)
 if e[-1]+1 == len(e):
     print('OK')
-    np.savetxt('D:/deepwalk_test/USAir/USAir_standard.txt', E, fmt="%d %d")
+    np.savetxt('/home/hongqiaochen/Desktop/Link_predict/Power/Power_standard.txt', E, fmt="%d %d")
 else:
     print('Worng')

@@ -1,6 +1,8 @@
 import numpy as np
 
-E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/Power/Power.txt')
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+E = np.loadtxt(path+'/USAir.txt')
+
 #得到无权图
 if len(E[0])==3 :
     E = np.delete(E,2,axis=1)
@@ -58,6 +60,6 @@ E = list5
 e = np.unique(E)
 if e[-1]+1 == len(e):
     print('OK')
-    np.savetxt('/home/hongqiaochen/Desktop/Link_predict/Power/Power_standard.txt', E, fmt="%d %d")
+    np.savetxt(path+'/standard.txt', E, fmt="%d %d")
 else:
     print('Worng')

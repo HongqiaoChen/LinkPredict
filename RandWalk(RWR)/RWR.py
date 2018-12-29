@@ -1,5 +1,7 @@
 import numpy as np
 
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+
 def get_sample(Test,Not):
     l_test = len(Test)
     l_Not = len(Not)
@@ -39,9 +41,9 @@ def AUC(Test_sample,Not_sample,f):
     return auc
 
 # 获取Test，Train，E集
-Test = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Test.edgelist',dtype=int)
-E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt',dtype=int)
-Train = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Train.edgelist',dtype=int)
+Test = np.loadtxt(path+'/Test.edgelist',dtype=int)
+E = np.loadtxt(path+'/standard.txt',dtype=int)
+Train = np.loadtxt(path+'/Train.edgelist',dtype=int)
 length = len(np.unique(E))
 nodes = np.unique(E)
 

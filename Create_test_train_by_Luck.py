@@ -2,6 +2,8 @@
 import numpy as np
 import random
 
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+
 #得到Test中度为1的点
 def get_Deg_1(Deg_V_Test):
     count = 0
@@ -44,7 +46,7 @@ def test_connect(visited):
 def Create_Test_and_Train():
     list1 = list(range(0, len(E)))
     number1 = (int)(len(E)*0.1)
-    number2 = (int)(len(E)*0.2)
+    number2 = (int)(len(E))
     slice = random.sample(list1,number2)
     Test = [[0,0] for i in range(number1)]
     dec = [[0] for i in range(number1)]
@@ -122,7 +124,7 @@ def Check_Train(Train):
 #     Test,Train = Create_Test_and_Train()
 #     a = Check_Train(Train)
 
-E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt', dtype=int)
+E = np.loadtxt(path+'/standard.txt', dtype=int)
 E = np.transpose(E)
 list1 = E[0]
 list2 = E[1]
@@ -140,11 +142,17 @@ for i in range(len(E)):
     Deg_V[E[i][1]] += 1
 Deg_V_E = np.hstack((list3, Deg_V))
 Deg_V_E = np.array(Deg_V_E)
+print(Deg_V_E)
+# count = 0
+# for i in range(len(list3)):
+#     if Deg_V_E[i][1] == 0:
+#         count += 1
+# print(count)
 # 把原边集中各节点的度赋值给 测试集，以待测试集逐条删边
 Deg_V_Train = Deg_V_E
 Test,Train = Create_Test_and_Train()
-np.savetxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Train.edgelist',Train,fmt="%d %d")
-np.savetxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Test.edgelist',Test,fmt="%d %d")
+np.savetxt(path+'/Train.edgelist',Train,fmt="%d %d")
+np.savetxt(path+'/Test.edgelist',Test,fmt="%d %d")
 
 
 

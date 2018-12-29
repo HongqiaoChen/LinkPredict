@@ -4,6 +4,7 @@ from gensim.models import word2vec
 import numpy as np
 import random
 
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
 
 def Start(list_v):
     choice = List[list_v[0]]
@@ -61,11 +62,11 @@ def Randwalk(p,times,length,window,min_count,alpha):
                     list_v[k] = list_v[k-1]
             walkpath[i+m*len(List)] = list_v
     walkpath = np.array(walkpath)
-    np.savetxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_walkpath.txt', walkpath,fmt='%d',delimiter=' ')
-    walkpath = word2vec.Text8Corpus('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_walkpath.txt')
+    np.savetxt(path+'/walkpath.txt', walkpath,fmt='%d',delimiter=' ')
+    walkpath = word2vec.Text8Corpus(path+'/walkpath.txt')
     model = word2vec.Word2Vec(walkpath,size = 64,hs = 1,min_count = min_count,window = window,sg=1,alpha=alpha)
-    model.wv.save_word2vec_format('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_vector.txt')
-    V = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_vector.txt', dtype=float,skiprows=1)
+    model.wv.save_word2vec_format(path+'/DW_vector.txt')
+    V = np.loadtxt(path+'/DW_vector.txt', dtype=float,skiprows=1)
     V = V[np.lexsort(V[:, ::-1].T)]
     V = np.delete(V, 0, axis=1)
     Test_sample, Not_sample = get_sample(Test, Not)
@@ -88,9 +89,9 @@ def Randwalk(p,times,length,window,min_count,alpha):
 
 
 # 读取Test,E,Train集合
-Test = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Test.edgelist',dtype=int)
-E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt',dtype=int)
-Train = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Train.edgelist',dtype=int)
+Test = np.loadtxt(path+'/Test.edgelist',dtype=int)
+E = np.loadtxt(path+'/standard.txt',dtype=int)
+Train = np.loadtxt(path+'/Train.edgelist',dtype=int)
 # 构造Not集
 P_E = 0
 for i in range(len(E)):

@@ -1,5 +1,7 @@
 import numpy as np
 
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+sigma = 1e-8
 def get_sample(Test,Not):
     l_test = len(Test)
     l_Not = len(Not)
@@ -23,7 +25,7 @@ def AA_Similarity(V1,V2):
     CN =list(set(l[V1]).intersection(set(l[V2])))
     S = 0
     for i in range(len(CN)):
-        S = 1/np.log(len(l[CN[i]])) + S
+        S = 1/(np.log(len(l[CN[i]]))+sigma) + S
     return S
 
 def AUC(Test_sample,Not_sample,f):
@@ -47,9 +49,9 @@ def AUC(Test_sample,Not_sample,f):
 
 
 # 获取Test，Train，E集
-Test = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Test.edgelist',dtype=int)
-E = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/USAir_standard.txt',dtype=int)
-Train = np.loadtxt('/home/hongqiaochen/Desktop/Link_predict/USAir/Train.edgelist',dtype=int)
+Test = np.loadtxt(path+'/Test.edgelist',dtype=int)
+E = np.loadtxt(path+'/standard.txt',dtype=int)
+Train = np.loadtxt(path+'/Train.edgelist',dtype=int)
 
 
 # 创建Not集
@@ -110,6 +112,7 @@ for i in range(len(Train)):
 for i in range(len(Train)):
     list_degree2[Train[i][1]][1] += 1
 List1 = [[] for i in range(len(list_degree1))]
+
 for i in range(len(Train)):
     List1[Train[i][0]].append(Train[i][1])
 for i in range(len(list_degree1)):

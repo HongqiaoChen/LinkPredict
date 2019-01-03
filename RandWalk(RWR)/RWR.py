@@ -20,6 +20,32 @@ def RWR(MatrixAdjacency_Train):
     Matrix_similarity = Matrix_RWR + Matrix_RWR.T
     return Matrix_similarity
 
+def Create_Not():
+    Num = len(np.unique(E))
+    N = [[1] * Num for i in range(Num)]
+    N = np.array(N)
+    for i in range(0, len(E)):
+        N[E[i][0]][E[i][1]] = 0
+        N[E[i][1]][E[i][0]] = 0
+    for i in range(0, Num):
+        N[i][i] = 0
+
+    count = 0
+    for i in range(0, Num):
+        for j in range(0, Num):
+            if N[i][j] == 1:
+                count += 1
+    number = int(count / 2)
+
+    count = 0
+    Not = [[0, 0] for i in range(number)]
+    for i in range(Num):
+        for j in range(i, Num):
+            if N[i][j] == 1:
+                Not[count][0] = i
+                Not[count][1] = j
+                count += 1
+    return Not
 
 def AUC(Test_sample,Not_sample,f):
     MAX = 672400
@@ -47,43 +73,7 @@ Train = np.loadtxt(path+'/Train.edgelist',dtype=int)
 length = len(np.unique(E))
 nodes = np.unique(E)
 
-# 创建Not集
-P_E = 0
-for i in range(len(E)):
-    if E[i][0] > P_E:
-        P_E = E[i][0]
-    elif E[i][1] > P_E:
-        P_E = E[i][1]
-P_E += 1
-N = [[1]*P_E for i in range(P_E)]
-N = np.array(N)
-for i in range(0,len(E)):
-    a = E[i][0]
-    b = E[i][1]
-    N[a][b] = 0
-for i in range(0,P_E):
-    N[i][i] = 0
-count2 =0
-for i in range(0,P_E):
-    for j in range(0,P_E):
-        if N[i][j] == 1:
-            count2 += 1
-number = count2
-i = 0
-j = 0
-count3 = 0
-NotA = [0 for i in range(number)]
-NotA = np.array(NotA)
-NotB = [0 for i in range(number)]
-NotB = np.array(NotB)
-for i in range(0,P_E):
-    for j in range(0,P_E):
-        if N[i][j] == 1:
-            NotA[count3] = i
-            NotB[count3] = j
-            count3 += 1
-Not = np.vstack([NotA,NotB])
-Not=np.transpose(Not)
+Not = Create_Not()
 
 # 创建List集 :List1和List2_代替邻接矩阵
 Train = np.transpose(Train)
@@ -133,10 +123,5 @@ AUC = AUC(Test_sample,Not_sample,RWR_s)
 print(AUC)
 
 
-# sim = sim_rank()
-#
-# Test_sample,Not_sample = get_sample(Test,Not)
-# AUC = AUC(Test_sample,Not_sample)
-# print(AUC)
-#
+
 

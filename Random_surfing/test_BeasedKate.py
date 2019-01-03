@@ -1,6 +1,7 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
 
 max_step = 10
 goal_D = 100
@@ -55,7 +56,13 @@ def DW_Similarity(V1,V2):
     S = float(1/(1+temp))
     return S
 
-def AUC(Test,Not):
+def rank(list,k=50):
+    Rank = list[0]
+    for i in range(1,k):
+        Rank = Rank+list[i]/(np.log2(i+1))
+    return Rank
+
+def AUC_NDCG():
     MAX = 672400
     V = np.loadtxt(path+'/Katz_vector.txt', dtype=float,skiprows=1)
     V = V[np.lexsort(V[:, ::-1].T)]
@@ -72,13 +79,24 @@ def AUC(Test,Not):
     n = MAX
     n1 = 0
     n2 = 0
+    DCG = [0.0 for i in range(MAX)]
+    IDCG = [0.0 for i in range(MAX)]
     for i in range(MAX):
         if S_Test_Sample[i] > S_Not_Sample[i]:
+            DCG[i] = 1
             n1 += 1
         if S_Test_Sample[i] == S_Not_Sample[i]:
+            DCG[i] = 0.5
             n2 += 1
-    AUC = (n1+0.5*n2)/n
-    return AUC
+    AUC = (n1 + 0.5 * n2) / n
+    for i in range(n1 + n2):
+        if i < n1:
+            IDCG[i] = 1.0
+        else:
+            IDCG[i] = 0.5
+    NDCG = rank(DCG) / rank(IDCG)
+    return AUC, NDCG
+
 
 
 # 读取Test,E,Train集合
@@ -95,6 +113,17 @@ for i in range(len(E)):
     adjarr[E[i][0]][E[i][1]] = 1
     adjarr[E[i][1]][E[i][0]] = 1
 
+Row_Sum = [0 for i in range(Num)]
+for i in range(Num):
+    row_sum = 0
+    for j in range(Num):
+        row_sum = row_sum + adjarr[i][j]
+    Row_Sum[i] = row_sum
+
+S = adjarr
+
+Y = [[0.0 for i in range(Num)]for j in range(Num)]
+Y = np.array(Y)
 P = [[0.0 for i in range(Num)]for j in range(Num)]
 P = np.array(P)
 for i in range(Num):
@@ -133,6 +162,6 @@ with open(path+'/Katz_vector.txt', 'r+') as f:
     f.seek(0, 0)
     f.write('%d %d\n' % (Num, goal_D)+content)
 
-AUC = AUC(Test,Not)
+AUC,NDCG = AUC_NDCG()
 
-print(AUC)
+print(AUC,NDCG)

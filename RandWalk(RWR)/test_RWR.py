@@ -1,7 +1,7 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
-sigma = 1e-8
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Power'
+
 def get_sample(Test,Not):
     l_test = len(Test)
     l_Not = len(Not)
@@ -10,23 +10,15 @@ def get_sample(Test,Not):
     Not_sample = np.random.choice(l_Not, size=MAX, replace=True)
     return Test_sample,Not_sample
 
-def CN_Similarity(V1,V2):
-    CN = list(set(l[V1]).intersection(set(l[V2])))
-    return len(CN)
-
-def RA_Similarity(V1,V2):
-    CN =list(set(l[V1]).intersection(set(l[V2])))
-    S = 0
-    for i in range(len(CN)):
-        S = 1/len(l[CN[i]]) + S
-    return S
-
-def AA_Similarity(V1,V2):
-    CN =list(set(l[V1]).intersection(set(l[V2])))
-    S = 0
-    for i in range(len(CN)):
-        S = 1/(np.log(len(l[CN[i]]))+sigma) + S
-    return S
+def RWR(MatrixAdjacency_Train):
+    Parameter = 0.8
+    Matrix_TransitionProbobility = MatrixAdjacency_Train / sum(MatrixAdjacency_Train)
+    Matrix_EYE = np.eye(MatrixAdjacency_Train.shape[0])
+    Temp = Matrix_EYE - Parameter * Matrix_TransitionProbobility.T
+    INV_Temp = np.linalg.inv(Temp)
+    Matrix_RWR = (1 - Parameter) * np.dot(INV_Temp, Matrix_EYE)
+    Matrix_similarity = Matrix_RWR + Matrix_RWR.T
+    return Matrix_similarity
 
 def Create_Not():
     Num = len(np.unique(E))
@@ -55,30 +47,47 @@ def Create_Not():
                 count += 1
     return Not
 
-def AUC(Test_sample,Not_sample,f):
+def rank(list,k=50):
+    Rank = list[0]
+    for i in range(1,k):
+        Rank = Rank+list[i]/(np.log2(i+1))
+    return Rank
+
+def AUC_NDCG(Test_sample,Not_sample,f):
     MAX = 672400
     S_Test_Sample = [0 for i in range(MAX)]
     S_Not_Sample = [0 for i in range(MAX)]
     for i in range(MAX):
-        S_Test_Sample[i] = f(Test[Test_sample[i]][0],Test[Test_sample[i]][1])
+        S_Test_Sample[i] = f[Test[Test_sample[i]][0]][Test[Test_sample[i]][1]]
     for i in range(MAX):
-        S_Not_Sample[i] = f(Not[Not_sample[i]][0],Not[Not_sample[i]][1])
+        S_Not_Sample[i] = f[Not[Not_sample[i]][0]][Not[Not_sample[i]][1]]
     n = MAX
     n1 = 0
     n2 = 0
+    DCG = [0.0 for i in range(MAX)]
+    IDCG = [0.0 for i in range(MAX)]
     for i in range(MAX):
         if S_Test_Sample[i] > S_Not_Sample[i]:
+            DCG[i] = 1
             n1 += 1
         if S_Test_Sample[i] == S_Not_Sample[i]:
+            DCG[i] = 0.5
             n2 += 1
-    auc = (n1 + 0.5 * n2) / n
-    return auc
-
+    AUC = (n1 + 0.5 * n2) / n
+    for i in range(n1 + n2):
+        if i < n1:
+            IDCG[i] = 1.0
+        else:
+            IDCG[i] = 0.5
+    NDCG = rank(DCG) / rank(IDCG)
+    return AUC, NDCG
 
 # 获取Test，Train，E集
 Test = np.loadtxt(path+'/Test.edgelist',dtype=int)
 E = np.loadtxt(path+'/standard.txt',dtype=int)
 Train = np.loadtxt(path+'/Train.edgelist',dtype=int)
+length = len(np.unique(E))
+nodes = np.unique(E)
 
 Not = Create_Not()
 
@@ -102,7 +111,6 @@ for i in range(len(Train)):
 for i in range(len(Train)):
     list_degree2[Train[i][1]][1] += 1
 List1 = [[] for i in range(len(list_degree1))]
-
 for i in range(len(Train)):
     List1[Train[i][0]].append(Train[i][1])
 for i in range(len(list_degree1)):
@@ -120,12 +128,16 @@ for i in range(len(list_degree1)):
     l2 = List2[i]
     l[i] = list(set(l1).union(set(l2)))
 
-# 取样
-
 Test_sample,Not_sample = get_sample(Test,Not)
-RA = AUC(Test_sample,Not_sample,RA_Similarity)
-print(RA)
-AA = AUC(Test_sample,Not_sample,AA_Similarity)
-print(AA)
-CN = AUC(Test_sample,Not_sample,CN_Similarity)
-print(CN)
+MatrixAdjacency_Train =[[0]*length for i in range(length)]
+for i in range(len(Train)):
+    MatrixAdjacency_Train[Train[i][0]][Train[i][1]] = 1
+    MatrixAdjacency_Train[Train[i][1]][Train[i][0]] = 1
+MatrixAdjacency_Train = np.array(MatrixAdjacency_Train)
+RWR_s = RWR(MatrixAdjacency_Train)
+AUC,NDCG = AUC_NDCG(Test_sample,Not_sample,RWR_s)
+print(AUC,NDCG)
+
+
+
+

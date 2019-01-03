@@ -4,7 +4,7 @@ from gensim.models import word2vec
 import numpy as np
 import random
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Power'
 
 def Start(list_v):
     choice = List[list_v[0]]
@@ -69,6 +69,12 @@ def Create_Not():
                 count += 1
     return Not
 
+def rank(list,k=50):
+    Rank = list[0]
+    for i in range(1,k):
+        Rank = Rank+list[i]/(np.log2(i+1))
+    return Rank
+
 def Randwalk(p,times,length,window,min_count,alpha):
     MAX = 672400
     flag = 0
@@ -106,13 +112,23 @@ def Randwalk(p,times,length,window,min_count,alpha):
     n = MAX
     n1 = 0
     n2 = 0
+    DCG = [0.0 for i in range(MAX)]
+    IDCG = [0.0 for i in range(MAX)]
     for i in range(MAX):
         if S_Test_Sample[i] > S_Not_Sample[i]:
+            DCG[i] = 1
             n1 += 1
         if S_Test_Sample[i] == S_Not_Sample[i]:
+            DCG[i] = 0.5
             n2 += 1
-    auc = (n1+0.5*n2)/n
-    return auc
+    AUC = (n1 + 0.5 * n2) / n
+    for i in range(n1 + n2):
+        if i < n1:
+            IDCG[i] = 1.0
+        else:
+            IDCG[i] = 0.5
+    NDCG = rank(DCG) / rank(IDCG)
+    return AUC, NDCG
 
 
 # 读取Test,E,Train集合
@@ -147,7 +163,7 @@ for i in range(len(list_degree)):
     List[i] = list(set(List[i]))
     List[i] = list(set(List[i]))
 
-auc = Randwalk(p=0, times=5, length=30, window=10,min_count=0, alpha=0.1)
+AUC,NDGC = Randwalk(p=0, times=15, length=10, window=15,min_count=0, alpha=0.01)
 
-print(auc)
+print(AUC,NDGC)
 

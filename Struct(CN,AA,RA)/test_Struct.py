@@ -1,6 +1,6 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Power'
 sigma = 1e-8
 def get_sample(Test,Not):
     l_test = len(Test)
@@ -55,7 +55,14 @@ def Create_Not():
                 count += 1
     return Not
 
-def AUC(Test_sample,Not_sample,f):
+
+def rank(list,k=50):
+    Rank = list[0]
+    for i in range(1,k):
+        Rank = Rank+list[i]/(np.log2(i+1))
+    return Rank
+
+def AUC_NDCG(Test_sample,Not_sample,f):
     MAX = 672400
     S_Test_Sample = [0 for i in range(MAX)]
     S_Not_Sample = [0 for i in range(MAX)]
@@ -66,13 +73,25 @@ def AUC(Test_sample,Not_sample,f):
     n = MAX
     n1 = 0
     n2 = 0
+    DCG = [0.0 for i in range(MAX)]
+    IDCG = [0.0 for i in range(MAX)]
     for i in range(MAX):
         if S_Test_Sample[i] > S_Not_Sample[i]:
+            DCG[i] = 1
             n1 += 1
         if S_Test_Sample[i] == S_Not_Sample[i]:
+            DCG[i] = 0.5
             n2 += 1
-    auc = (n1 + 0.5 * n2) / n
-    return auc
+    AUC = (n1 + 0.5 * n2) / n
+    for i in range(n1 + n2):
+        if i < n1:
+            IDCG[i] = 1.0
+        else:
+            IDCG[i] = 0.5
+    NDCG = rank(DCG) / rank(IDCG)
+    return AUC, NDCG
+
+
 
 
 # 获取Test，Train，E集
@@ -123,9 +142,9 @@ for i in range(len(list_degree1)):
 # 取样
 
 Test_sample,Not_sample = get_sample(Test,Not)
-RA = AUC(Test_sample,Not_sample,RA_Similarity)
-print(RA)
-AA = AUC(Test_sample,Not_sample,AA_Similarity)
-print(AA)
-CN = AUC(Test_sample,Not_sample,CN_Similarity)
-print(CN)
+RA_AUC,RA_NDCG = AUC_NDCG(Test_sample,Not_sample,RA_Similarity)
+print(RA_AUC,RA_NDCG)
+AA_AUC,AA_NDCG = AUC_NDCG(Test_sample,Not_sample,AA_Similarity)
+print(AA_AUC,AA_NDCG)
+CN_AUC,CN_NDCG = AUC_NDCG(Test_sample,Not_sample,CN_Similarity)
+print(CN_AUC,CN_NDCG)

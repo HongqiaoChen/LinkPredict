@@ -1,9 +1,9 @@
 import numpy as np
 import random
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Router'
 
-#µÃµ½TestÖÐ¶ÈÎª1µÄµã
+#ï¿½Ãµï¿½Testï¿½Ð¶ï¿½Îª1ï¿½Äµï¿½
 def get_Deg_1(Deg_V_Test):
     count = 0
     for i in range(len(Deg_V_Test)):
@@ -18,14 +18,14 @@ def get_Deg_1(Deg_V_Test):
             count1 +=1
     return list_1
 
-#ÅÐ¶ÏÒ»¸ö½ÚµãÊÇ·ñÎª¶ÈÎª1µÄ½Úµã
+#ï¿½Ð¶ï¿½Ò»ï¿½ï¿½ï¿½Úµï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½Îª1ï¿½Ä½Úµï¿½
 def in_Deg_1(Deg_V_Train,v):
     list_1 = get_Deg_1(Deg_V_Train)
     for i in range(len(list_1)):
         if list_1[i] == v:
             return 1
 
-#ÓÃÉî¶ÈÓÅÏÈ±éÀúÍ¼µÄ·½Ê½±éÀúÒ»¸öÍ¼
+#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½Í¼ï¿½Ä·ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Í¼
 def dfs(graph, start, visited=None):
     if visited is None:
         visited = []
@@ -34,14 +34,14 @@ def dfs(graph, start, visited=None):
         dfs(graph, next, visited)
     return visited
 
-#¸ù¾Ý±éÀúµÄ½á¹ûµÃµ½Í¼µÄÁ¬Í¨ÐÔ
+#ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½Ãµï¿½Í¼ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
 def test_connect(visited):
     if len(np.unique(visited)) == len(Deg_V_E):
         return 1
     else:
         return 0
 
-#¸ù¾Ý¶ÈµÄ±ê×¼À´»®·ÖTestºÍTrain
+#ï¿½ï¿½ï¿½Ý¶ÈµÄ±ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Testï¿½ï¿½Train
 def Create_Test_and_Train():
     list1 = list(range(0, len(E)))
     number1 = (int)(len(E)*0.1)
@@ -61,7 +61,7 @@ def Create_Test_and_Train():
     Train = np.delete(E, dec, axis=0)
     return Test,Train
 
-#¼ì²âTrainÊÇ·ñÎªÁ¬Í¨µÄ£¬Èô²»ÊÇÖØÐÂµ÷ÓÃCreate_Test_and_Train()
+#ï¿½ï¿½ï¿½Trainï¿½Ç·ï¿½Îªï¿½ï¿½Í¨ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Create_Test_and_Train()
 def Check_Train(Train):
     Train = np.transpose(Train)
     list1 = Train[0]
@@ -113,7 +113,7 @@ Deg_V_E = np.hstack((list3, Deg_V))
 Deg_V_E = np.array(Deg_V_E)
 print(Deg_V_E)
 
-# °ÑÔ­±ß¼¯ÖÐ¸÷½ÚµãµÄ¶È¸³Öµ¸ø ²âÊÔ¼¯£¬ÒÔ´ý²âÊÔ¼¯ÖðÌõÉ¾±ß
+# ï¿½ï¿½Ô­ï¿½ß¼ï¿½ï¿½Ð¸ï¿½ï¿½Úµï¿½Ä¶È¸ï¿½Öµï¿½ï¿½ ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 Deg_V_Train = Deg_V_E
 Test,Train = Create_Test_and_Train()
 np.savetxt(path+'/Train.edgelist',Train,fmt="%d %d")

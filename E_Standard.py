@@ -1,7 +1,7 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
-E = np.loadtxt(path+'/USAir.txt')
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/ER'
+E = np.loadtxt(path+'/ER.txt')
 
 #得到无权图
 if len(E[0])==3 :

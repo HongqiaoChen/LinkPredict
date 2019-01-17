@@ -1,6 +1,6 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/BA'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Power'
 
 max_step = 10
 goal_D = 100
@@ -112,14 +112,16 @@ for count in range(max_step):
 
 
 
+for i in range(Num):
+    for j in range(Num):
+        if Y[i][j] == 0 :
+            Y[i][j] == 10e-8
+        else:
+            Y[i][j]= np.log10(Y[i][j])
+print(Y)
 
-X = P_start
-XI = np.linalg.inv(X)
-W = np.dot(XI,Y)
-print(W)
-W = np.transpose(W)
-print(W)
-U,sigma,VT = np.linalg.svd(W)
+
+U,sigma,VT = np.linalg.svd(Y)
 
 
 sigma_D = [[0.0 for i in range(goal_D)]for j in range(goal_D)]

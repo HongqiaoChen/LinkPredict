@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/Router'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
 
 #�õ�Test�ж�Ϊ1�ĵ�
 def get_Deg_1(Deg_V_Test):

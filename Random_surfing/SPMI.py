@@ -1,6 +1,6 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/Power'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
 
 max_step = 10
 goal_D = 100

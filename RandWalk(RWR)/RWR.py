@@ -1,6 +1,6 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
 
 def get_sample(Test,Not):
     l_test = len(Test)

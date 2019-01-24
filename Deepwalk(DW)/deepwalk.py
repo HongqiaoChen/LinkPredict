@@ -4,7 +4,7 @@ from gensim.models import word2vec
 import numpy as np
 import random
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/USAir'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
 
 def Start(list_v):
     choice = List[list_v[0]]
@@ -147,7 +147,7 @@ for i in range(len(list_degree)):
     List[i] = list(set(List[i]))
     List[i] = list(set(List[i]))
 
-auc = Randwalk(p=0, times=5, length=30, window=10,min_count=0, alpha=0.1)
+auc = Randwalk(p=0, times=5, length=20, window=10,min_count=0, alpha=0.1)
 
 print(auc)
 

@@ -1,9 +1,9 @@
 import numpy as np
 
-path = '/home/hongqiaochen/Desktop/Date_Link_predict/WS'
+path = '/home/hongqiaochen/Desktop/Date_Link_predict/Router'
 
 max_step = 10
-goal_D = 100
+
 
 def Standard(matrix):
     out = [[0.0 for i in range(Num)]for j in range(Num)]
@@ -118,29 +118,32 @@ for i in range(Num):
             Y[i][j] == 10e-8
         else:
             Y[i][j]= np.log10(Y[i][j])
-print(Y)
+
 
 
 U,sigma,VT = np.linalg.svd(Y)
 
+print(Num)
+goal_Ds = [int(Num*0.001),int(Num*0.003),int(Num*0.005),int(Num*0.03)]
 
-sigma_D = [[0.0 for i in range(goal_D)]for j in range(goal_D)]
-sigma_D = np.array(sigma_D)
-for i in range(goal_D):
-    sigma_D[i][i] = sigma[i]
-U_D = U[:,0:goal_D]
+for goal_D in goal_Ds:
+    sigma_D = [[0.0 for i in range(goal_D)]for j in range(goal_D)]
+    sigma_D = np.array(sigma_D)
+    for i in range(goal_D):
+        sigma_D[i][i] = sigma[i]
+    U_D = U[:,0:goal_D]
 
-R = np.dot(U_D,sigma_D)
+    R = np.dot(U_D,sigma_D)
 
-l = list(range(Num))
-l = np.array(l)
-R = np.insert(R,0,values=l,axis=1)
-np.savetxt(path+'/Katz_vector.txt',R)
-with open(path+'/Katz_vector.txt', 'r+') as f:
-    content = f.read()
-    f.seek(0, 0)
-    f.write('%d %d\n' % (Num, goal_D)+content)
+    l = list(range(Num))
+    l = np.array(l)
+    R = np.insert(R,0,values=l,axis=1)
+    np.savetxt(path+'/Katz_vector.txt',R)
+    with open(path+'/Katz_vector.txt', 'r+') as f:
+        content = f.read()
+        f.seek(0, 0)
+        f.write('%d %d\n' % (Num, goal_D)+content)
 
-AUC = AUC(Test,Not)
+    auc = AUC(Test,Not)
 
-print(AUC)
+    print(auc)
